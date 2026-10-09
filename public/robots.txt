@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://ifs24030-pabwe2026-sk-p5-vue.vercel.app/sitemap.xml

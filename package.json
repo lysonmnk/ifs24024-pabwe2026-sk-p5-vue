@@ -1,0 +1,37 @@
+{
+  "name": "ifs24030-pabwe2026-sk-p5-vue",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "@toast-ui/editor": "^3.2.2",
+    "clsx": "^2.1.1",
+    "lucide-vue-next": "^1.0.0",
+    "pinia": "^4.0.3",
+    "sweetalert2": "^11.26.25",
+    "tailwind-merge": "^3.7.0",
+    "vue": "^3.5.43",
+    "vue-router": "^5.3.1"
+  },
+  "overrides": {
+    "dompurify": "^3.2.4"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@vitejs/plugin-vue": "^6.0.9",
+    "@vitest/coverage-v8": "^5.0.2",
+    "@vue/test-utils": "^2.5.1",
+    "jsdom": "^30.1.1",
+    "tailwindcss": "^4.3.3",
+    "vite": "^8.3.1",
+    "vitest": "^5.0.2"
+  }
+}
