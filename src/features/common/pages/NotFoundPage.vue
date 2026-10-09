@@ -3,7 +3,7 @@ import { RouterLink } from "vue-router";
 </script>
 
 <template>
-  <main class="min-h-screen grid place-items-center text-center p-6">
+  <main role="main" class="min-h-screen grid place-items-center text-center p-6">
     <div>
       <p class="text-7xl font-extrabold text-indigo-600">404</p>
       <h1 class="mt-2 text-xl font-bold">Halaman tidak ditemukan</h1>
