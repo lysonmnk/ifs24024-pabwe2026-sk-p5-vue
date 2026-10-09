@@ -6,7 +6,7 @@ const tab = "rounded-lg py-2 text-center text-sm font-semibold transition";
 </script>
 
 <template>
-  <main class="min-h-screen grid place-items-center p-4 bg-gradient-to-br from-slate-50 to-indigo-50">
+  <main role="main" class="min-h-screen grid place-items-center p-4 bg-gradient-to-br from-slate-50 to-indigo-50">
     <div class="w-full max-w-md">
       <header class="text-center mb-6">
         <div class="mx-auto w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-600 to-sky-500 grid place-items-center text-white shadow-lg">

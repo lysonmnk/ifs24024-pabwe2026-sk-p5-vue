@@ -1,15 +1,22 @@
-import Swal from "sweetalert2";
+const getSwal = async () => (await import("sweetalert2")).default;
 
-export const showSuccessDialog = (message) =>
-  Swal.fire({ icon: "success", title: "Berhasil", text: message, timer: 1800, showConfirmButton: false });
+export const showSuccessDialog = async (message) => {
+  const Swal = await getSwal();
+  return Swal.fire({ icon: "success", title: "Berhasil", text: message, timer: 1800, showConfirmButton: false });
+};
 
-export const showErrorDialog = (message) =>
-  Swal.fire({ icon: "error", title: "Gagal", text: message });
+export const showErrorDialog = async (message) => {
+  const Swal = await getSwal();
+  return Swal.fire({ icon: "error", title: "Gagal", text: message });
+};
 
-export const showWarningDialog = (message) =>
-  Swal.fire({ icon: "warning", title: "Perhatian", text: message });
+export const showWarningDialog = async (message) => {
+  const Swal = await getSwal();
+  return Swal.fire({ icon: "warning", title: "Perhatian", text: message });
+};
 
 export const showConfirmDialog = async (message) => {
+  const Swal = await getSwal();
   const result = await Swal.fire({
     icon: "question",
     title: "Konfirmasi",

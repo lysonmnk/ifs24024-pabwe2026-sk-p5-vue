@@ -72,5 +72,7 @@ const btn = "flex items-center gap-1 rounded-xl px-3 py-2 text-sm font-semibold"
     <ChangeCoverModal v-if="modal === 'cover'" :aucation="a" @close="modal = null" @done="done" />
     <BidModal v-if="modal === 'bid'" :aucation="a" @close="modal = null" @done="done" />
   </section>
-  <p v-else class="text-slate-500">Memuat detail lelang...</p>
+  <div v-else class="rounded-2xl bg-white p-5 shadow-sm text-center">
+    <h1 class="text-xl font-bold text-slate-700" data-testid="title">Memuat detail lelang...</h1>
+  </div>
 </template>

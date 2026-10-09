@@ -24,7 +24,7 @@ onMounted(async () => {
     <NavbarComponent @toggle-sidebar="open = !open" />
     <div class="flex">
       <SidebarComponent :open="open" @close="open = false" />
-      <main class="min-w-0 flex-1 p-4 sm:p-6"><RouterView /></main>
+      <main role="main" class="min-w-0 flex-1 p-4 sm:p-6"><RouterView /></main>
     </div>
   </div>
 </template>
