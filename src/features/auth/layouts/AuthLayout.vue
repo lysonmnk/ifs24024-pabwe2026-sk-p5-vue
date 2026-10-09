@@ -16,7 +16,7 @@ const tab = "rounded-lg py-2 text-center text-sm font-semibold transition";
         <p class="text-sm text-slate-500">Platform Lelang Online Modern</p>
       </header>
       <section class="bg-white rounded-3xl shadow-xl p-6">
-        <nav aria-label="Navigasi Autentikasi" class="grid grid-cols-2 gap-1 bg-slate-100 rounded-xl p-1 mb-5">
+        <nav class="grid grid-cols-2 gap-1 bg-slate-100 rounded-xl p-1 mb-5">
           <RouterLink to="/auth/login" :class="tab" active-class="bg-white text-indigo-600 shadow" data-testid="tab-login">Masuk Akun</RouterLink>
           <RouterLink to="/auth/register" :class="tab" active-class="bg-white text-indigo-600 shadow" data-testid="tab-register">Daftar Baru</RouterLink>
         </nav>
