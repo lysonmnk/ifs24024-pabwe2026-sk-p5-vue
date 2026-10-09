@@ -2,6 +2,12 @@
   publish = "dist"
   command = "bun run build"
 
+[build.processing]
+  skip_processing = true
+
+[build.environment]
+  NETLIFY_FEEDBACK = "false"
+
 [[headers]]
   for = "/assets/*"
   [headers.values]
