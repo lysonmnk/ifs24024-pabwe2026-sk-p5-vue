@@ -117,22 +117,16 @@ describe("HomePage", () => {
     expect(store.deleteAllAucations).not.toHaveBeenCalled();
   });
 
-  it("menggunakan params kosong jika tab tidak dikenali", async () => {
+  it("menginisialisasi tab ke mine jika query mine tersedia di route", async () => {
     const pinia = createMockPinia();
-    const store = useAucationsStore(pinia);
-    store.fetchAucations = vi.fn();
-
     const { wrapper } = await renderWithProviders(HomePage, {
       pinia,
+      route: "/?mine=1",
       global: {
         stubs: { AddModal: true },
       },
     });
-
-    store.fetchAucations.mockClear();
-    wrapper.vm.tab = "tab_tidak_ada";
-    await wrapper.vm.$nextTick();
-    expect(store.fetchAucations).toHaveBeenCalledWith({});
+    expect(wrapper.find('[data-testid="tab-mine"]').classes()).toContain("bg-indigo-600");
   });
 
   it("membuka dan menutup AddModal saat tambah lelang", async () => {

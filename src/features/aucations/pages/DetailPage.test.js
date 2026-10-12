@@ -220,4 +220,40 @@ describe("DetailPage", () => {
     await wrapper.find('[data-testid="btn-back"]').trigger("click");
     expect(routerBackSpy).toHaveBeenCalled();
   });
+
+  it("membuka dan menutup ChangeCoverModal serta BidModal", async () => {
+    const { wrapper, pinia } = await renderWithProviders(DetailPage, {
+      global: {
+        stubs: {
+          MarkdownViewer: true,
+          ChangeModal: true,
+          ChangeCoverModal: {
+            template: "<div data-testid='stub-cover'><button data-testid='btn-cover-close' @click=\"$emit('close')\"></button></div>",
+            emits: ["close", "done"],
+          },
+          BidModal: {
+            template: "<div data-testid='stub-bid'><button data-testid='btn-bid-close' @click=\"$emit('close')\"></button></div>",
+            emits: ["close", "done"],
+          },
+        },
+      },
+    });
+    const store = useAucationsStore(pinia);
+    const users = useUsersStore(pinia);
+    store.aucation = mockAucation;
+    users.profile = { id: 10, name: "Owner" };
+    await wrapper.vm.$nextTick();
+
+    await wrapper.find('[data-testid="btn-cover"]').trigger("click");
+    expect(wrapper.find('[data-testid="stub-cover"]').exists()).toBe(true);
+    await wrapper.find('[data-testid="btn-cover-close"]').trigger("click");
+    expect(wrapper.find('[data-testid="stub-cover"]').exists()).toBe(false);
+
+    users.profile = { id: 99, name: "Bidder" };
+    await wrapper.vm.$nextTick();
+    await wrapper.find('[data-testid="btn-bid"]').trigger("click");
+    expect(wrapper.find('[data-testid="stub-bid"]').exists()).toBe(true);
+    await wrapper.find('[data-testid="btn-bid-close"]').trigger("click");
+    expect(wrapper.find('[data-testid="stub-bid"]').exists()).toBe(false);
+  });
 });
