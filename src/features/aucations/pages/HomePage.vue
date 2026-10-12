@@ -26,8 +26,10 @@ const tab = ref(route.query.mine ? "mine" : "all");
 const keyword = ref("");
 const showAdd = ref(false);
 
-const load = () =>
-  store.fetchAucations(tabs.find((t) => t.key === tab.value).params);
+const load = () => {
+  const currentTab = tabs.find((t) => t.key === tab.value);
+  return store.fetchAucations(currentTab ? currentTab.params : {});
+};
 
 const filtered = computed(() => {
   const k = keyword.value.trim().toLowerCase();

@@ -22,7 +22,7 @@ watch(
 );
 
 const onPhoto = (e) => {
-  photo.value = e.target.files[0] || null;
+  photo.value = e.target?.files?.[0] || null;
 };
 
 const saveProfile = () =>

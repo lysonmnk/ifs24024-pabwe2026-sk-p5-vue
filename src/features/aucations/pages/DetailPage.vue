@@ -19,6 +19,7 @@ const modal = ref(null);
 const a = computed(() => store.aucation);
 const isOwner = computed(() => a.value && users.profile && a.value.user_id === users.profile.id);
 const closed = computed(() => isAucationClosed(a.value));
+const highestBid = computed(() => getHighestBid(a.value));
 const bids = computed(() => [...(a.value?.bids || [])].sort((x, y) => Number(y.bid) - Number(x.bid)));
 const hasMyBid = computed(() => bids.value.some((b) => b.user_id === users.profile?.id));
 
@@ -32,10 +33,18 @@ async function done() {
   await load();
 }
 async function remove() {
-  if (await showConfirmDialog("Hapus lelang ini?") && (await store.deleteAucation(a.value.id))) router.replace("/");
+  const confirmed = await showConfirmDialog("Hapus lelang ini?");
+  if (confirmed && a.value?.id) {
+    const ok = await store.deleteAucation(a.value.id);
+    if (ok) router.replace("/");
+  }
 }
 async function cancelBid() {
-  if (await showConfirmDialog("Batalkan tawaranmu?") && (await store.deleteBid(a.value.id))) await load();
+  const confirmed = await showConfirmDialog("Batalkan tawaranmu?");
+  if (confirmed && a.value?.id) {
+    const ok = await store.deleteBid(a.value.id);
+    if (ok) await load();
+  }
 }
 const btn = "flex items-center gap-1 rounded-xl px-3 py-2 text-sm font-semibold";
 </script>
@@ -46,7 +55,7 @@ const btn = "flex items-center gap-1 rounded-xl px-3 py-2 text-sm font-semibold"
     <img v-if="a.cover" :src="a.cover" :alt="a.title" class="h-72 w-full rounded-2xl object-cover" />
     <div class="rounded-2xl bg-white p-5 shadow-sm space-y-3">
       <h1 class="text-2xl font-extrabold" data-testid="title">{{ a.title }}</h1>
-      <p class="text-sm text-slate-600">Harga awal {{ formatRupiah(a.start_bid) }} · Tertinggi <b class="text-indigo-700">{{ formatRupiah(getHighestBid(a)) }}</b></p>
+      <p class="text-sm text-slate-600">Harga awal {{ formatRupiah(a.start_bid) }} · Tertinggi <b class="text-indigo-700">{{ formatRupiah(highestBid) }}</b></p>
       <p :class="closed ? 'text-red-700' : 'text-emerald-800'" class="text-sm font-semibold">{{ closed ? "Ditutup" : "Berlangsung" }} · berakhir {{ formatDate(a.closed_at) }}</p>
       <MarkdownViewer :value="a.description || ''" />
       <div class="flex flex-wrap gap-2 pt-2">
