@@ -109,6 +109,30 @@ describe("HomePage", () => {
     await wrapper.find('[data-testid="btn-delete-all"]').trigger("click");
     expect(tools.showConfirmDialog).toHaveBeenCalledWith("Hapus SEMUA lelang milikmu?");
     expect(store.deleteAllAucations).toHaveBeenCalled();
+
+    // Ketika konfirmasi dibatalkan
+    tools.showConfirmDialog.mockResolvedValue(false);
+    store.deleteAllAucations.mockClear();
+    await wrapper.find('[data-testid="btn-delete-all"]').trigger("click");
+    expect(store.deleteAllAucations).not.toHaveBeenCalled();
+  });
+
+  it("menggunakan params kosong jika tab tidak dikenali", async () => {
+    const pinia = createMockPinia();
+    const store = useAucationsStore(pinia);
+    store.fetchAucations = vi.fn();
+
+    const { wrapper } = await renderWithProviders(HomePage, {
+      pinia,
+      global: {
+        stubs: { AddModal: true },
+      },
+    });
+
+    store.fetchAucations.mockClear();
+    wrapper.vm.tab = "tab_tidak_ada";
+    await wrapper.vm.$nextTick();
+    expect(store.fetchAucations).toHaveBeenCalledWith({});
   });
 
   it("membuka dan menutup AddModal saat tambah lelang", async () => {

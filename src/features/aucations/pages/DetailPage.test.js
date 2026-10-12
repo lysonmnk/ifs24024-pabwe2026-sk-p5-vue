@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import DetailPage from "./DetailPage.vue";
-import { renderWithProviders } from "../../../test-utils.js";
+import { renderWithProviders, createMockPinia } from "../../../test-utils.js";
 import { useAucationsStore } from "../states/aucationsStore.js";
 import { useUsersStore } from "../../users/states/usersStore.js";
 import * as tools from "../../../helpers/toolsHelper.js";
@@ -33,7 +33,13 @@ describe("DetailPage", () => {
   });
 
   it("menampilkan pesan memuat jika data lelang belum ada", async () => {
+    const pinia = createMockPinia();
+    const store = useAucationsStore(pinia);
+    store.aucation = null;
+    store.fetchAucation = vi.fn().mockImplementation(() => new Promise(() => {})); // pending
+
     const { wrapper } = await renderWithProviders(DetailPage, {
+      pinia,
       global: {
         stubs: {
           MarkdownViewer: true,
@@ -45,6 +51,28 @@ describe("DetailPage", () => {
     });
 
     expect(wrapper.text()).toContain("Memuat detail lelang...");
+  });
+
+  it("melakukan redirect ke beranda jika lelang gagal dimuat", async () => {
+    const pinia = createMockPinia();
+    const store = useAucationsStore(pinia);
+    store.aucation = null;
+    store.fetchAucation = vi.fn().mockResolvedValue(false);
+
+    const { router } = await renderWithProviders(DetailPage, {
+      pinia,
+      global: {
+        stubs: {
+          MarkdownViewer: true,
+          ChangeModal: true,
+          ChangeCoverModal: true,
+          BidModal: true,
+        },
+      },
+    });
+
+    await new Promise((r) => setTimeout(r, 20));
+    expect(router.currentRoute.value.path).toBe("/");
   });
 
   it("menampilkan tombol aksi pemilik jika pengguna adalah pemilik lelang", async () => {
@@ -85,6 +113,19 @@ describe("DetailPage", () => {
     expect(tools.showConfirmDialog).toHaveBeenCalledWith("Hapus lelang ini?");
     expect(store.deleteAucation).toHaveBeenCalledWith(1);
     expect(routerSpy).toHaveBeenCalledWith("/");
+
+    // Hapus lelang ketika dialog dibatalkan
+    tools.showConfirmDialog.mockResolvedValue(false);
+    store.deleteAucation.mockClear();
+    await wrapper.find('[data-testid="btn-delete"]').trigger("click");
+    expect(store.deleteAucation).not.toHaveBeenCalled();
+
+    // Hapus lelang ketika deleteAucation return false
+    tools.showConfirmDialog.mockResolvedValue(true);
+    store.deleteAucation = vi.fn().mockResolvedValue(false);
+    routerSpy.mockClear();
+    await wrapper.find('[data-testid="btn-delete"]').trigger("click");
+    expect(routerSpy).not.toHaveBeenCalled();
   });
 
   it("menampilkan tombol ajukan tawaran dan batalkan tawaran bagi peserta", async () => {
@@ -115,10 +156,23 @@ describe("DetailPage", () => {
     await wrapper.find('[data-testid="btn-bid"]').trigger("click");
     expect(wrapper.findComponent({ name: "BidModal" }).exists()).toBe(true);
 
-    // Batalkan tawaran
+    // Batalkan tawaran sukses
     await wrapper.find('[data-testid="btn-cancel-bid"]').trigger("click");
     expect(tools.showConfirmDialog).toHaveBeenCalledWith("Batalkan tawaranmu?");
     expect(store.deleteBid).toHaveBeenCalledWith(1);
+
+    // Batalkan tawaran ketika konfirmasi dibatalkan
+    tools.showConfirmDialog.mockResolvedValue(false);
+    store.deleteBid.mockClear();
+    await wrapper.find('[data-testid="btn-cancel-bid"]').trigger("click");
+    expect(store.deleteBid).not.toHaveBeenCalled();
+
+    // Batalkan tawaran ketika deleteBid return false
+    tools.showConfirmDialog.mockResolvedValue(true);
+    store.deleteBid = vi.fn().mockResolvedValue(false);
+    store.fetchAucation.mockClear();
+    await wrapper.find('[data-testid="btn-cancel-bid"]').trigger("click");
+    expect(store.fetchAucation).not.toHaveBeenCalled();
   });
 
   it("menutup modal dan memuat ulang data saat modal selesai (done)", async () => {

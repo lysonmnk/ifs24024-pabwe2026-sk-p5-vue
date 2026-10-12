@@ -52,6 +52,8 @@ async function removeAll() {
     await load();
   }
 }
+
+defineExpose({ tab, load });
 </script>
 
 <template>

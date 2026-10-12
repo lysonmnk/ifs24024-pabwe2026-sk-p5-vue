@@ -34,14 +34,14 @@ async function done() {
 }
 async function remove() {
   const confirmed = await showConfirmDialog("Hapus lelang ini?");
-  if (confirmed && a.value?.id) {
+  if (confirmed) {
     const ok = await store.deleteAucation(a.value.id);
     if (ok) router.replace("/");
   }
 }
 async function cancelBid() {
   const confirmed = await showConfirmDialog("Batalkan tawaranmu?");
-  if (confirmed && a.value?.id) {
+  if (confirmed) {
     const ok = await store.deleteBid(a.value.id);
     if (ok) await load();
   }

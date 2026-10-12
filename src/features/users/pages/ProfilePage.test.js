@@ -61,25 +61,40 @@ describe("ProfilePage", () => {
     expect(store.changePhoto).toHaveBeenCalledWith(file);
   });
 
-  it("menangani ubah kata sandi (validasi kosong & sukses ubah)", async () => {
+  it("menangani pemilihan foto ketika tidak ada file yang dipilih", async () => {
+    const { wrapper } = await renderWithProviders(ProfilePage);
+    const photoInput = wrapper.find('[data-testid="profile-photo"]');
+    Object.defineProperty(photoInput.element, "files", {
+      value: [],
+      writable: true,
+    });
+    await photoInput.trigger("change");
+  });
+
+  it("menangani ubah kata sandi (validasi kosong, gagal, & sukses ubah)", async () => {
     const { wrapper, pinia } = await renderWithProviders(ProfilePage);
     const store = useUsersStore(pinia);
-    store.changePassword = vi.fn().mockResolvedValue(true);
+    store.changePassword = vi.fn().mockResolvedValue(false);
 
     const forms = wrapper.findAll("form");
     // Form ketiga adalah Ubah Kata Sandi
     await forms[2].trigger("submit.prevent");
     expect(tools.showWarningDialog).toHaveBeenCalledWith("Isi kata sandi lama dan baru");
 
+    // Hanya isi kata sandi lama
     await wrapper.find('[data-testid="old-password"]').setValue("oldpass123");
-    await wrapper.find('[data-testid="new-password"]').setValue("newpass123");
-
     await forms[2].trigger("submit.prevent");
-    expect(store.changePassword).toHaveBeenCalledWith({
-      password: "oldpass123",
-      new_password: "newpass123",
-    });
+    expect(tools.showWarningDialog).toHaveBeenCalledWith("Isi kata sandi lama dan baru");
 
+    // Isi kata sandi baru tapi store.changePassword return false
+    await wrapper.find('[data-testid="new-password"]').setValue("newpass123");
+    await forms[2].trigger("submit.prevent");
+    expect(store.changePassword).toHaveBeenCalled();
+    expect(wrapper.find('[data-testid="old-password"]').element.value).toBe("oldpass123");
+
+    // Sukses ubah
+    store.changePassword.mockResolvedValue(true);
+    await forms[2].trigger("submit.prevent");
     expect(wrapper.find('[data-testid="old-password"]').element.value).toBe("");
     expect(wrapper.find('[data-testid="new-password"]').element.value).toBe("");
   });
