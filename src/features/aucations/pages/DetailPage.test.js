@@ -181,7 +181,7 @@ describe("DetailPage", () => {
         stubs: {
           MarkdownViewer: true,
           ChangeModal: {
-            template: "<div data-testid='stub-change'><button data-testid='btn-done' @click=\"$emit('done')\"></button></div>",
+            template: "<div data-testid='stub-change'><button data-testid='btn-done' @click=\"$emit('done')\"></button><button data-testid='btn-close' @click=\"$emit('close')\"></button></div>",
             emits: ["done", "close"],
           },
           ChangeCoverModal: true,
@@ -199,6 +199,11 @@ describe("DetailPage", () => {
     await wrapper.find('[data-testid="btn-edit"]').trigger("click");
     await wrapper.find('[data-testid="btn-done"]').trigger("click");
     expect(store.fetchAucation).toHaveBeenCalled();
+
+    // Trigger close modal
+    await wrapper.find('[data-testid="btn-edit"]').trigger("click");
+    await wrapper.find('[data-testid="btn-close"]').trigger("click");
+    expect(wrapper.find('[data-testid="stub-change"]').exists()).toBe(false);
   });
 
   it("menavigasi kembali ketika tombol kembali diklik", async () => {
