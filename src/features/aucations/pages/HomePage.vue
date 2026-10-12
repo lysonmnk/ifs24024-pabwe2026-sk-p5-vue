@@ -26,10 +26,14 @@ const tab = ref(route.query.mine ? "mine" : "all");
 const keyword = ref("");
 const showAdd = ref(false);
 
-const load = () => {
-  const currentTab = tabs.find((t) => t.key === tab.value);
-  return store.fetchAucations(currentTab ? currentTab.params : {});
+const tabParams = {
+  all: {},
+  mine: { is_me: 1 },
+  ongoing: { is_closed: 0 },
+  closed: { is_closed: 1 },
 };
+
+const load = () => store.fetchAucations(tabParams[tab.value]);
 
 const filtered = computed(() => {
   const k = keyword.value.trim().toLowerCase();
