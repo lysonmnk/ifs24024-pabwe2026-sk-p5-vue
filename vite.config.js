@@ -3,28 +3,11 @@ import vue from "@vitejs/plugin-vue";
 import tailwindcss from "@tailwindcss/vite";
 import process from "process";
 
-const inlineCssPlugin = () => ({
-  name: "inline-css",
-  apply: "build",
-  enforce: "post",
-  transformIndexHtml(html, { bundle }) {
-    if (!bundle) return html;
-    let newHtml = html;
-    for (const [fileName, chunk] of Object.entries(bundle)) {
-      if (fileName.endsWith(".css") && chunk.type === "asset" && fileName.includes("index")) {
-        const linkPattern = new RegExp(`<link[^>]+href="[^"]*${fileName}"[^>]*>`, "i");
-        newHtml = newHtml.replace(linkPattern, `<style>${chunk.source}</style>`);
-      }
-    }
-    return newHtml;
-  },
-});
-
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
   return {
-    plugins: [vue(), tailwindcss(), inlineCssPlugin()],
+    plugins: [vue(), tailwindcss()],
     server: { port: Number(env.APP_PORT) || 3000 },
     preview: { port: Number(env.APP_PORT) || 3000 },
     define: {
